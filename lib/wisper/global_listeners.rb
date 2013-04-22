@@ -9,7 +9,7 @@ module Wisper
     end
 
     def add_listener(listener, options = {})
-      listeners << ObjectRegistration.new(listener, options)
+      listeners << ObjectRegistration.new(listener, { :publisher => self }.merge(options))
       self
     end
 

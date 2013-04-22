@@ -3,6 +3,7 @@ require "wisper/registration/registration"
 require "wisper/registration/object"
 require "wisper/registration/object/async_listener"
 require "wisper/registration/block"
+require "wisper/registration/tracer"
 require 'wisper/global_listeners'
 
 module Wisper
@@ -11,7 +12,7 @@ module Wisper
   end
 
   def add_listener(listener, options = {})
-    listeners << ObjectRegistration.new(listener, options)
+    listeners << ObjectRegistration.new(listener, { :publisher => self }.merge(options))
     self
   end
 
