@@ -306,6 +306,19 @@ stub_wisper_publisher("MyPublisher", :execute, :some_event, "foo1", "foo2", ...)
 
 See `spec/lib/rspec_extensions_spec.rb` for a runnable example.
 
+## Tracing
+
+```ruby
+class MyPublisher
+  include Wisper
+end
+
+tracer = Wisper::Tracer.new
+tracer.enable
+tracer.log
+tracer.to_pdf
+```
+
 ## Compatibility
 
 Tested with 1.9.x on MRI, JRuby and Rubinius.
