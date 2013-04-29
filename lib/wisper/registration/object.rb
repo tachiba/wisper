@@ -17,7 +17,7 @@ module Wisper
     def broadcast(event, *args)
       method_to_call = map_event_to_method(event)
       if should_broadcast?(event) && listener.respond_to?(method_to_call)
-        trace(publisher, event, listener, async)
+        before_broadcast(event)
         unless async
           listener.public_send(method_to_call, *args)
         else
@@ -32,16 +32,8 @@ module Wisper
       with || event
     end
 
-    def trace(publisher, event, listener, async)
-      return unless tracer.enabled?
-      tracer.log(:publisher => publisher.class.to_s,
-                                       :event => event,
-                                       :listener => listener.class.to_s,
-                                       :async => async)
-    end
-
-    def tracer
-      Wisper::Registration::Tracer
+    def before_broadcast(event)
+      # no-op
     end
   end
 end

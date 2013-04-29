@@ -20,6 +20,18 @@ module Wisper
 
       def enable
         @enabled = true
+        ObjectRegistration.class_eval do
+          def before_broadcast(event)
+            tracer.log(:publisher => publisher.class.to_s,
+                       :event => event,
+                       :listener => listener.class.to_s,
+                       :async => async)
+          end
+
+          def tracer
+            Wisper::Registration::Tracer
+          end
+        end
       end
 
       def disable
