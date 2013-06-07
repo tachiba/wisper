@@ -9,6 +9,7 @@ require 'wisper/global_listeners'
 
 module Wisper
   def self.included(base)
-    raise 'Backwards incompatible change `include Wisper::Publisher` instead of `include  Wisper`'
+    warn "[DEPRECATION] `include Wisper::Publisher` instead of `include Wisper`"
+    base.class_eval { include Wisper::Publisher  }
   end
 end

@@ -108,9 +108,11 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(params[:post])
 
-    @post.subscribe(PusherListener.new)
-    @post.subscribe(ActivityListener.new)
-    @post.subscribe(StatisticsListener.new)
+    @post.subscribers do
+      add PusherListener.new
+      add ActivityListener.new
+      add StatisticsListener.new
+    end
 
     @post.on(:create_post_successful) { |post| redirect_to post }
     @post.on(:create_post_failed)     { |post| render :action => :new }
@@ -202,7 +204,16 @@ However it means that when looking at the code it will not be obvious that the
 global listeners are being executed in additional to the regular listeners.
 
 ```ruby
-Wisper::GlobalListeners.add_listener(MyListener.new)
+Wisper::GlobalListeners.add_listener(ActivityRecorder.new)
+```
+
+You can add multiple listeners using a block.
+
+```ruby
+Wisper::GlobalListeners.listeners do
+  add ActivityRecorder.new
+  add StatisticsRecorder.new
+end
 ```
 
 In a Rails app you might want to add your global listeners in an initalizer.
@@ -310,7 +321,8 @@ See `spec/lib/rspec_extensions_spec.rb` for a runnable example.
 
 ## Compatibility
 
-Tested with 1.9.x on MRI, JRuby and Rubinius.
+Tested with MRI 1.9.x, MRI 2.0.0, JRuby (1.9 and 2.0 mode) and Rubinius (1.9
+mode).
 See the [build status](https://travis-ci.org/krisleech/wisper) for details.
 
 ## License
