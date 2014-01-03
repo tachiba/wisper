@@ -76,6 +76,21 @@ describe Wisper::Publisher do
       end
     end
 
+    describe ':scope argument' do
+      it 'scopes listener to given class' do
+        listener_1 = double('InScopeListener')
+        listener_1.should_receive(:it_happended)
+
+        listener_2 = double('OutOfScopeListener')
+        listener_2.should_not_receive(:it_happended)
+
+        publisher.add_listener(listener_1, :scope => publisher.class)
+        publisher.add_listener(listener_2, :scope => Class.new)
+
+        publisher.send(:broadcast, 'it_happended')
+      end
+    end
+
     it 'returns publisher so methods can be chained' do
       publisher.add_listener(listener, :on => 'so_did_this').should == publisher
     end
