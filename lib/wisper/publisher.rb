@@ -23,6 +23,14 @@ module Wisper
 
     alias :on :respond_to
 
+    module ClassMethods
+      def add_listener(listener, options = {})
+        GlobalListeners.add(listener, options.merge(:scope => self))
+      end
+
+      alias :subscribe :add_listener
+    end
+
     private
 
     def local_registrations
@@ -52,6 +60,10 @@ module Wisper
 
     def clean_event(event)
       event.to_s.gsub('-', '_')
+    end
+
+    def self.included(base)
+      base.extend(ClassMethods)
     end
   end
 end
