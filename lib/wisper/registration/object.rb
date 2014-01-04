@@ -1,12 +1,12 @@
 module Wisper
   class ObjectRegistration < Registration
-    attr_reader :with, :prefix, :scope
+    attr_reader :with, :prefix, :scopes
 
     def initialize(listener, options)
       super(listener, options)
       @with   = options[:with]
       @prefix = stringify_prefix(options[:prefix])
-      @scope = options.fetch(:scope, :all)
+      @scopes = Array(options[:scope]).to_set
       fail_on_async if options.has_key?(:async)
     end
 
@@ -20,8 +20,7 @@ module Wisper
     private
 
     def in_scope?(publisher)
-      return true if scope == :all
-      publisher.class == scope
+      scopes.empty? || scopes.include?(publisher.class)
     end
 
     def map_event_to_method(event)
